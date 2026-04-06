@@ -15,6 +15,14 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item
+                        icon="document-text"
+                        :href="route('users.posts.index', auth()->user())"
+                        :current="request()->routeIs('users.posts.*')"
+                        wire:navigate
+                    >
+                        {{ __('Posts') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
