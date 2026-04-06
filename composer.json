@@ -70,7 +70,7 @@
             "@test"
         ],
         "test": [
-            "docker compose exec app artisan config:clear --ansi",
+            "docker compose exec app artisan optimize:clear --ansi",
             "@lint:check",
             "docker compose exec app artisan test"
         ],

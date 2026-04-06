@@ -116,7 +116,7 @@ This project has domain-specific skills available. You MUST activate the relevan
 # Test Enforcement
 
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
-- Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test --compact` with a specific filename or filter.
+- Run tests with `composer test` (runs `artisan optimize:clear` in the Docker `app` container, then Pint in test mode, then `artisan test`). `optimize:clear` removes cached config, routes, views, events, and other compiled caches so tests see current code. To run a subset while iterating, use `docker compose exec app artisan test --compact` with a file path or `--filter`.
 
 === laravel/core rules ===
 
@@ -168,7 +168,35 @@ This project has domain-specific skills available. You MUST activate the relevan
 ## Pest
 
 - This project uses Pest for testing. Create tests: `php artisan make:test --pest {name}`.
-- Run tests: `php artisan test --compact` or filter: `php artisan test --compact --filter=testName`.
+- Run tests: `composer test`. For a single file or filter: `docker compose exec app artisan test --compact tests/Feature/ExampleTest.php` or `--filter=testName`.
 - Do NOT delete tests without approval.
 
 </laravel-boost-guidelines>
+
+<repo-rules>
+=== Purpose of this repository ===
+
+This repository is a showcase of how to implement Laravel features, viewable via a git diff comparing main to the feature branches.
+
+What to do:
+- Demonstrate how to implement Laravel features by providing git diffs on dedicated branches.
+- Name branches clearly to reflect the feature being showcased (e.g., feature/relationships/belongs-to).
+- Add all necessary files and code in the corresponding branch to implement the feature.
+- Use Test Driven Development (TDD) when developing features.
+- Apply the latest Laravel features and best practices.
+- Add comments to the code to explain the feature implementation and reasoning in detail.
+  - In chained methods, explain the reasoning for each method call. For example, in the following code:
+    ```php
+    $table->foreignId('user_id') // foreign key column — Laravel expects user_id for a user() relationship.
+        ->constrained() // adds a foreign key to users.id; cascadeOnDelete removes posts if the user is deleted.
+        ->cascadeOnDelete(); // deletes all posts when the user is deleted.
+    ```
+    Explain what each chained method and argument accomplishes in context.
+- Show alternative implementations via commented out code.
+
+What not to do:
+- Do not over-engineer solutions; keep implementations straightforward and focused.
+- Do not stray from the feature being demonstrated when making changes.
+- Avoid using outdated Laravel practices or features.
+
+</repo-rules>
