@@ -1,0 +1,8 @@
+# Merge with compose.yaml in CI: development image + project bind mount so
+# composer install runs inside the container with vendor/bin/pest available.
+services:
+    app:
+        build:
+            target: development
+        volumes:
+            - .:/var/www/html

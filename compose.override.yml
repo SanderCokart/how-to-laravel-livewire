@@ -1,0 +1,19 @@
+services:
+  app:
+    build:
+      target: development
+    ports:
+      - '${APP_PORT:-80}:8080'
+    volumes:
+      - '.:/var/www/html'
+  db:
+    ports:
+      - '${FORWARD_DB_PORT:-5432}:5432'
+  redis:
+    ports:
+      - '${FORWARD_REDIS_PORT:-6379}:6379'
+  mailpit:
+    ports:
+      - '${FORWARD_MAILPIT_PORT:-1025}:1025'
+      - '${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025'
+

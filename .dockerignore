@@ -1,0 +1,21 @@
+# Docker-related files and configs
+.dockerignore
+Dockerfile
+compose.yaml
+
+# App storage and dependencies
+public/storage
+node_modules
+vendor
+
+# Git and editor files
+.git
+.gitignore
+.gitattributes
+
+# System and editor config files
+.DS_Store
+.editorconfig
+
+# Environment files
+.env*

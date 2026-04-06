@@ -1,0 +1,66 @@
+services:
+    app:
+        tty: true
+        env_file:
+            - .env
+        build:
+            dockerfile: Dockerfile
+            context: .
+            target: production
+            args:
+                USER_ID: ${USER_ID:-1000}
+                GROUP_ID: ${GROUP_ID:-1000}
+        restart: unless-stopped
+        depends_on:
+            - db
+            - redis
+            - mailpit
+        environment:
+            AUTORUN_ENABLED: true
+            HEALTHCHECK_PATH: /health
+        healthcheck:
+            test: ['CMD', 'curl', '-f', 'http://127.0.0.1:8080/health']
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    redis:
+        restart: unless-stopped
+        image: 'redis:8.4-alpine'
+        volumes:
+            - 'redis-data:/data'
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    db:
+        restart: unless-stopped
+        image: 'postgres:18-alpine'
+        env_file:
+            - .env
+        environment:
+            POSTGRES_DB: '${DB_DATABASE}'
+            POSTGRES_USER: '${DB_USERNAME}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD}'
+        volumes:
+            - 'postgres-data:/var/lib/postgresql'
+            - './docker/postgres/10-create-testing-database.sh:/docker-entrypoint-initdb.d/10-create-testing-database.sh:ro'
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -q -d "$$POSTGRES_DB" -U "$$POSTGRES_USER"']
+            interval: 30s
+            timeout: 10s
+            retries: 3
+
+    mailpit:
+        restart: unless-stopped
+        image: 'axllent/mailpit:latest'
+        env_file:
+            - .env
+
+volumes:
+    postgres-data:
+        driver: local
+    redis-data:
+        driver: local
